@@ -37,10 +37,26 @@ def validate_run(run_id):
 
         source_records = cursor.fetchall()
 
+        # An empty batch is a valid, successful no-op. This keeps empty-input
+        # runs observable instead of treating them as a pipeline failure.
         if not source_records:
-            raise ValueError(
-                f"No source records found for run_id: {run_id}"
+            cursor.execute(
+                """
+                UPDATE pipeline_runs
+                SET accepted_count = 0,
+                    rejected_count = 0
+                WHERE run_id = %s
+                """,
+                (run_id,),
             )
+            connection.commit()
+
+            return {
+                "run_id": run_id,
+                "input_count": 0,
+                "accepted_count": 0,
+                "rejected_count": 0,
+            }
 
         accepted_count = 0
         rejected_count = 0

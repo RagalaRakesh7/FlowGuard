@@ -67,6 +67,9 @@ status, and downstream blocking.
 -   `run_pipeline.py` --- command-line pipeline entry point.
 -   `run_dashboard.py` --- starts the Flask dashboard.
 -   `data/generate_data.py` --- generates sample order data.
+-   `schema.sql` --- MySQL schema for all seven tables.
+-   `DATA_DICTIONARY.md` --- source and table data dictionary.
+-   `reconciliation.sql` --- post-run reconciliation queries.
 -   `tests/` --- automated tests.
 
 ## 5. Database design
@@ -132,8 +135,14 @@ DB_PASSWORD=your_mysql_password
 
 ### Prepare the database
 
-Create the `flowguard_db` database and apply the SQL schema used by your
-project. The schema should create the seven tables listed above.
+Create the `flowguard_db` database and apply the included schema:
+
+``` cmd
+mysql -u root -p flowguard_db < schema.sql
+```
+
+The schema creates the seven tables listed above. `schema.sql` is included in
+the project root.
 
 ## 7. Run the application
 

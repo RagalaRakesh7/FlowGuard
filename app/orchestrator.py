@@ -477,6 +477,8 @@ def run_logged_task(
 
 def run_pipeline(source_path=None):
 
+    pipeline_start_time = time.perf_counter()
+
     print("\n")
     print("=" * 55)
     print("       FLOWGUARD PIPELINE ORCHESTRATOR")
@@ -589,7 +591,16 @@ def run_pipeline(source_path=None):
         print("Accepted Records:", accepted_count)
         print("Rejected Records:", rejected_count)
         print("Transformed Records:", transformed_count)
+        pipeline_duration = time.perf_counter() - pipeline_start_time
         print("Published Records:", published_count)
+        print(
+            f"Pipeline Duration: {pipeline_duration:.2f} seconds"
+        )
+        if input_count:
+            print(
+                f"Pipeline Throughput: "
+                f"{input_count / pipeline_duration:.2f} records/second"
+            )
 
         return {
             "run_id": run_id,
